@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>POS ร้านอาหาร</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    .products, .cart { margin-bottom: 20px; }
+    .product { border: 1px solid #ccc; padding: 10px; margin: 5px; display: inline-block; width: 150px; }
+    .cart-item { margin: 5px 0; }
+    button { padding: 5px 10px; margin-top: 5px; }
+    .total { font-weight: bold; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h1>POS ร้านอาหาร</h1>
+
+  <div class="products">
+    <h2>🍲 สินค้า</h2>
+    <div id="product-list"></div>
+  </div>
+
+  <div class="cart">
+    <h2>🛒 ตะกร้าสินค้า</h2>
+    <div id="cart-list"></div>
+    <div class="total">ราคารวม: <span id="total">0</span> บาท</div>
+    <button onclick="printReceipt()">🖨️ พิมพ์ใบเสร็จ</button>
+  </div>
+
+  <script>
+    const products = [
+      { name: "ข้าวผัดหมู", price: 45 },
+      { name: "ผัดกะเพราไก่", price: 50 },
+      { name: "ต้มยำกุ้ง", price: 80 },
+      { name: "ไข่เจียวหมูสับ", price: 40 },
+      { name: "น้ำเปล่า", price: 10 },
+      { name: "โค้กกระป๋อง", price: 15 }
+    ];
+
+    const cart = [];
+
+    const productList = document.getElementById('product-list');
+    const cartList = document.getElementById('cart-list');
+    const totalDisplay = document.getElementById('total');
+
+    function renderProducts() {
+      products.forEach((product, index) => {
+        const div = document.createElement('div');
+        div.className = 'product';
+        div.innerHTML = `
+          <strong>${product.name}</strong><br>
+          ราคา: ${product.price} บาท<br>
+          <button onclick="addToCart(${index})">เพิ่ม</button>
+        `;
+        productList.appendChild(div);
+      });
+    }
+
+    function addToCart(index) {
+      const product = products[index];
+      const existing = cart.find(item => item.name === product.name);
+      if (existing) {
+        existing.qty++;
+      } else {
+        cart.push({ ...product, qty: 1 });
+      }
+      renderCart();
+    }
+
+    function renderCart() {
+      cartList.innerHTML = '';
+      let total = 0;
+      cart.forEach((item, i) => {
+        const div = document.createElement('div');
+        div.className = 'cart-item';
+        const itemTotal = item.qty * item.price;
+        total += itemTotal;
+        div.innerHTML = `
+          ${item.name} × ${item.qty} = ${itemTotal} บาท
+          <button onclick="removeItem(${i})">ลบ</button>
+        `;
+        cartList.appendChild(div);
+      });
+      totalDisplay.textContent = total;
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      renderCart();
+    }
+
+    function printReceipt() {
+      alert("กำลังพัฒนา: ฟังก์ชันพิมพ์ใบเสร็จ");
+    }
+
+    renderProducts();
+  </script>
+</body>
+</html>
